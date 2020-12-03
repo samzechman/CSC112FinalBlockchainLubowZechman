@@ -4,7 +4,7 @@ public class Transaction {
 
     //variable declarations
     private Artefact artefact; //Artefact of type Artefact class
-    private LocalDateTime timestamp; //Timestamp of the transaction on the artefact identified with id including the date and time
+    private int timestamp; //Timestamp (year) of the transaction on the artefact identified with id including the date and time
     private Stakeholder seller; //the seller in this current transaction of type Stakeholder
     private Stakeholder buyer; //the buyer in this current transaction of type Stakeholder
     private Stakeholder auctionHouse; //AuctionHouse of type Stakeholder
@@ -14,7 +14,7 @@ public class Transaction {
     public void setArtefact (Artefact artefact){
         this.artefact = artefact;
     }
-    public void setTimestamp (LocalDateTime timestamp){
+    public void setTimestamp (int timestamp){
         this.timestamp = timestamp;
     }
     public void setSeller (Stakeholder seller){
@@ -33,7 +33,7 @@ public class Transaction {
     public Artefact getArtefact (){
         return artefact;
     }
-    public LocalDateTime getTimestamp (){
+    public int getTimestamp (){
         return timestamp;
     }
     public Stakeholder getSeller (){

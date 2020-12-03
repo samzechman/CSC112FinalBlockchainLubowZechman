@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Block {
@@ -12,9 +13,37 @@ public class Block {
     //variable declarations
     private String prevHash; //Hash of the previous block, an important part to build the blockchain
     private Transaction data; //The actual data, the provenance of artefacts
-    private LocalDateTime timestamp; //The timestamp of the creation of this block
+    private int timestamp; //The year of the creation of this block
     private int nonce; //A nonce, which is an arbitrary (i.e. random) number used in cryptography
     private String currHash; //The hash of this block, calculated based on other data
+
+    //default constructor
+    public Block (){
+        prevHash = "";
+        data = null;
+        timestamp = 0;
+        nonce = 0;
+        currHash = "";
+    }
+
+    //copy constructor
+    public Block (Block b){
+        this.prevHash = b.prevHash;
+        this.data = b.data;
+        this.timestamp = b.timestamp;
+        this.nonce = b.nonce;
+        this.currHash = b.currHash;
+    }
+
+    //parameterized constructor
+    public Block (Transaction data, String prevHash, int year){
+        this.prevHash = prevHash;
+        this.data = data;
+        this.timestamp = year;
+        this.nonce = (int)Math.random();
+        this.currHash = calculateBlockHash();
+    }
+
 
     //getter methods
     public String getPrevHash() {
@@ -23,7 +52,7 @@ public class Block {
     public Transaction getData() {
         return data;
     }
-    public LocalDateTime getTimestamp() {
+    public int getTimestamp() {
         return timestamp;
     }
     public int getNonce() {
@@ -39,7 +68,7 @@ public class Block {
     public void setData(Transaction data) {
         this.data = data;
     }
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(int timestamp) {
         this.timestamp = timestamp;
     }
     public void setNonce(int nonce) {
@@ -71,12 +100,12 @@ public class Block {
     }
 
     //method to mine the blocks
-    public String mineBlock(int prefix){
+    public String mineBlock(int prefix, ArrayList<Block> BC){
         //Define the prefix you desire to find
         String prefixString = new String(new char[prefix]).replace('\0', '0');
         //If the transaction meets the stakeholders agreement in TreatySC, mine the block;
         //otherwise abort the transaction and display a proper message.
-        if (!TreatySC(data)){
+        if (BC.size() > 2 && !TreatySC(data)){
             System.out.println("This transaction does not meet the stakeholders' agreement -- block not valid.");
         }
         else {
@@ -153,7 +182,7 @@ public class Block {
         //parse the text file of transactions
         while(fileReader.hasNextLine()){
             //if the id provided matches the artefact's id, add to the array
-            if (data.getArtefact().getId() == id && data.getTimestamp().getYear() > timestamp){
+            if (data.getArtefact().getId() == id && data.getTimestamp() > timestamp){
                 transactions.add(data);
             }
         }
@@ -161,7 +190,7 @@ public class Block {
     }
 
     //can be used by any node in the network to validate that a block chain is valid
-    public boolean verify_Blockchain (ArrayList<Block> BC){
+    public boolean verify_Blockchain (ArrayList<Block> BC, int prefix){
 
         Block currentBlock;
         Block previousBlock;
@@ -182,7 +211,7 @@ public class Block {
                 return false;
             }
             //checking if the current block has been mined
-            if ( currentBlock.getCurrHash().substring(0, prefix).equals(prefixString) ) { ////ASK IN CLASS
+            if ( currentBlock.getCurrHash().substring(0, prefix).equals(new String(new char[prefix]).replace('\0', '0')) ) {
                 //block has not been mined
                 return false;
             }
