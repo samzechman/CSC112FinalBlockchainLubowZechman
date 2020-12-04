@@ -1,9 +1,11 @@
+import java.nio.file.StandardWatchEventKinds;
+
 public class Artefact {
 
     //variable declarations
     private String id; //Id to identify each artefact
     private String name; //Name of the artefact
-    private String country; //Country of origin of this artefact
+    private Stakeholder country; //Country of origin of the artefact
     private Stakeholder owner; //Current owner of type Stakeholder
 
     //setter methods
@@ -13,7 +15,7 @@ public class Artefact {
     public void setName (String name){
         this.name = name;
     }
-    public void setCountry (String country){
+    public void setCountry (Stakeholder country){
         this.country = country;
     }
     public void setOwner (Stakeholder owner){
@@ -26,7 +28,7 @@ public class Artefact {
     public String getName (){
         return name;
     }
-    public String getCountry (){
+    public Stakeholder getCountry (){
         return country;
     }
     public Stakeholder getOwner (){

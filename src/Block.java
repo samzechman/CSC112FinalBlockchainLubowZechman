@@ -115,17 +115,19 @@ public class Block {
                 nonce++;
                 currHash = calculateBlockHash();
             }
+            System.out.println("block mined");
+            System.out.println(currHash);
         }
         return currHash;
     }
 
     //implement the agreement between the stakeholders
     public boolean TreatySC (Transaction t){
-        if (retrieveProvenance(data.getArtefact().getId(), 2001).size() >= 2 && data.getBuyer().getBalance() >= data.getPrice()){
+        if (/*retrieveProvenance(data.getArtefact().getId(), 2001).size() >= 2 &&*/ data.getBuyer().getBalance() >= data.getPrice()){
             //10% of sale given to the auction house
             data.getAuctionHouse().setBalance(data.getAuctionHouse().getBalance() + data.getPrice() * 0.1);
             //20% of sale to country of origin
-            /////ASK ABOUT IN CLASS
+            data.getArtefact().getCountry().setBalance(data.getArtefact().getCountry().getBalance() + data.getPrice() * 0.2);
             //70% of sale given to the seller
             data.getSeller().setBalance(data.getSeller().getBalance() + data.getPrice() * 0.7);
             return true;
@@ -203,16 +205,21 @@ public class Block {
             //checking if the current hash is equal to the calculated hash or not
             if (!currentBlock.currHash.equals(currentBlock.calculateBlockHash())) {
                 //hashes not equal
+                System.out.println("first");
                 return false;
             }
             //checking if the previous hash is equal to the calculated previous hash or not
             if (!previousBlock.currHash.equals(currentBlock.prevHash)) {
                 //prev hashes not equal
+                System.out.println(previousBlock.currHash);
+                System.out.println(currentBlock.prevHash);
+                System.out.println("second");
                 return false;
             }
             //checking if the current block has been mined
-            if ( currentBlock.getCurrHash().substring(0, prefix).equals(new String(new char[prefix]).replace('\0', '0')) ) {
+            if ( currentBlock.getCurrHash().substring(0, prefix).equals(0000) ) {
                 //block has not been mined
+                System.out.println("third");
                 return false;
             }
         }

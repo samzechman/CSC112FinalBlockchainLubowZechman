@@ -53,7 +53,7 @@ public class Transaction {
     @Override
     public String toString(){
         String string = artefact.toString() + ", Time stamp: " + timestamp + ", Seller: " + seller + ", Buyer: " + buyer
-                + ", Auction house: " + auctionHouse + ", Price: $" + price;
+                + ", Auction house: " + auctionHouse.getAddress() + ", Price: $" + price;
         return string;
     }
 
