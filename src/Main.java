@@ -124,6 +124,7 @@ public class Main {
         //System.out.println("Would you like to add another artefact to the database?");
         //fill in
 
+////need to figure out how to make this not clear each time the code is run
         FileOutputStream transactionsFile = null;
         //ensure the file actually exists
         try {
@@ -153,10 +154,11 @@ public class Main {
             if (blockchain.size() == 0){
                 newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
             }
-            else if (blockchain.size() >= 1 && blockchain.size() <= data.size() && i >=1 ){
+            else if (blockchain.size() >= 1 && blockchain.size() < data.size() && i >=1 ){
                 newBlock = new Block( data.get(i), blockchain.get(i-1).getCurrHash(), data.get(i).getTimestamp() );
             }
-            else{ //if i is 0 and blockchain already has values
+////problem with i or the iteration maybe? or prev hash?
+            else { //if i is 0 and blockchain already has values
                 newBlock = new Block( data.get(i), blockchain.get(i).getPrevHash(), data.get(i).getTimestamp() );
             }
 
@@ -166,6 +168,7 @@ public class Main {
             if (newBlock.verify_Blockchain(blockchain, 0000)){
                 blockchain.add(newBlock);
                 fileWriter.println(data.get(i).toString());
+
                 System.out.println("Transaction completed");
             }
             else
