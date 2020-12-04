@@ -148,7 +148,19 @@ public class Main {
             System.out.print("Enter price of transaction: $");
             data.get(i).setPrice(scnr.nextDouble());
             data.get(i).setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
-            Block newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
+
+            Block newBlock = null;
+            if (blockchain.size() == 0){
+                newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
+            }
+            else if (blockchain.size() >= 1 && blockchain.size() <= data.size() && i >=1 ){
+                newBlock = new Block( data.get(i), blockchain.get(i-1).getCurrHash(), data.get(i).getTimestamp() );
+            }
+            else{ //if i is 0 and blockchain already has values
+                newBlock = new Block( data.get(i), blockchain.get(i).getPrevHash(), data.get(i).getTimestamp() );
+            }
+
+            //Block newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
             newBlock.mineBlock(prefix, blockchain);
             //check if valid block
             if (newBlock.verify_Blockchain(blockchain, 0000)){
@@ -160,7 +172,7 @@ public class Main {
                 System.out.println("Malicious block, not added to the chain");
 
             //iterate through data, cycles back to start if at end
-            if (i < data.size()){
+            if (i < data.size() - 1) {
                 i++;
             }
             else {

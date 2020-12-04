@@ -38,7 +38,7 @@ public class Artefact {
     //to string
     @Override
     public String toString(){
-        String string = "Artefact name: " + name + ", ID: " + id + ", Country of origin: " + country + ", Current owner: " + owner;
+        String string = "Artefact name: " + name + ", ID: " + id + ", Country of origin: " + country.getName() + ", Current owner: " + owner;
         return string;
     }
 

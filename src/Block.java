@@ -37,10 +37,10 @@ public class Block {
 
     //parameterized constructor
     public Block (Transaction data, String prevHash, int year){
+        this.nonce = (int)Math.random();
         this.prevHash = prevHash;
         this.data = data;
         this.timestamp = year;
-        this.nonce = (int)Math.random();
         this.currHash = calculateBlockHash();
     }
 
@@ -226,7 +226,6 @@ public class Block {
         // If all the hashes are equal to the calculated hashes, then blockchain is valid
         return true;
     }
-
 
 
 }
