@@ -139,10 +139,11 @@ public class Main {
         //assigning a writer for the file
         PrintWriter fileWriter = new PrintWriter(transactionsFile);
 
-        System.out.println("data size: " + data.size());
+        //System.out.println("data size: " + data.size()); //testing
         System.out.print("Would you like to add a transaction? (0 for yes, 1 for no) ");
         int answer = scnr.nextInt();
-        int i = 0;
+        int i = 0; //will need to change if can get transactions file to not clear each time
+        //loop to add transactions while the user answers yes
         while (answer == 0){
 
             System.out.println("Artefact in transaction: " + data.get(i).getArtefact().getName() + " from " + data.get(i).getSeller().getName() + " to " + data.get(i).getBuyer().getName());
@@ -151,14 +152,14 @@ public class Main {
             data.get(i).setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
 
             Block newBlock = null;
-            System.out.println("bC size: " + blockchain.size());
+            //System.out.println("BC size: " + blockchain.size()); //testing
             if (blockchain.size() == 0){
                 newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
             }
             else if (blockchain.size() >= 1 && blockchain.size() < data.size() && i >=1 ){
                 newBlock = new Block( data.get(i), blockchain.get(i-1).getCurrHash(), data.get(i).getTimestamp() );
             }
-////problem with i or the iteration maybe? or prev hash?
+////problem with i or the iteration maybe? or prev hash? -- might not need now
             else { //if i is 0 and blockchain already has values
                 newBlock = new Block( data.get(i), blockchain.get(i).getPrevHash(), data.get(i).getTimestamp() );
             }
@@ -188,14 +189,14 @@ public class Main {
             //iterate through data, cycles back to start if at end
             if (i < data.size() - 1) {
                 i++;
-                System.out.println("data size: " + data.size() + " i: " + i);
+                //System.out.println("data size: " + data.size() + " i: " + i); //testing
             }
             else {
                 int size = data.size();
                 for (int j = 0; j < size; j++){
                     Transaction dataTemp = new Transaction(data.get(j));
                     data.add(dataTemp);
-                    System.out.println("data size: " + data.size() + " i: " + i + " j: " + j);
+                    //System.out.println("data size: " + data.size() + " i: " + i + " j: " + j); //testing
                 }
                 i++;
             }
@@ -204,56 +205,6 @@ public class Main {
             answer = scnr.nextInt();
         }
 
-
-/*
-        //adding first block
-        System.out.println("Artefact in transaction: " + dataTemp.getArtefact().getName() + " from " + dataTemp.getSeller().getName() + " to " + dataTemp.getBuyer().getName());
-        System.out.print("Enter price of transaction: $");
-        dataTemp.setPrice(scnr.nextDouble());
-        dataTemp.setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
-        Block genesisBlock = new Block(dataTemp, "0", dataTemp.getTimestamp());
-        genesisBlock.mineBlock(prefix, blockchain);
-        //check if valid block
-        if (genesisBlock.verify_Blockchain(blockchain, prefix)){
-            blockchain.add(genesisBlock);
-            fileWriter.println(dataTemp.toString());
-            System.out.println("Transaction completed");
-        }
-        else
-            System.out.println("Malicious block, not added to the chain");
-
-        //adding second block
-        System.out.println("Artefact in transaction: " + data2.getArtefact().getName() + " from " + data2.getSeller().getName() + " to " + data2.getBuyer().getName());
-        System.out.print("Enter price of transaction: $");
-        data2.setPrice(scnr.nextDouble());
-        data2.setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
-        Block secondBlock = new Block(data2, blockchain.get(blockchain.size() - 1).getCurrHash(), data2.getTimestamp());
-        secondBlock.mineBlock(prefix, blockchain);
-        //check if valid block
-        if (secondBlock.verify_Blockchain(blockchain, prefix)){
-            blockchain.add(secondBlock);
-            fileWriter.println(data2.toString());
-            System.out.println("Transaction completed");
-        }
-        else
-            System.out.println("Malicious block, not added to the chain");
-
-        //adding third block
-        System.out.println("Artefact in transaction: " + data3.getArtefact().getName() + " from " + data3.getSeller().getName() + " to " + data3.getBuyer().getName());
-        System.out.print("Enter price of transaction: $");
-        data3.setPrice(scnr.nextDouble());
-        data3.setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
-        Block newBlock = new Block(data3, blockchain.get(blockchain.size() - 1).getCurrHash(), data3.getTimestamp());
-        newBlock.mineBlock(prefix, blockchain);
-        //check if valid block
-        if (newBlock.verify_Blockchain(blockchain, prefix)){
-            blockchain.add(newBlock);
-            fileWriter.println(data3.toString());
-            System.out.println("Transaction completed");
-        }
-        else
-            System.out.println("Malicious block, not added to the chain");
-*/
         fileWriter.close();
     }
 
