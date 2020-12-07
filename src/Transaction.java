@@ -10,6 +10,27 @@ public class Transaction {
     private Stakeholder auctionHouse; //AuctionHouse of type Stakeholder
     private double price; //the price of the artefact in this current transaction
 
+    //default constructor
+    public Transaction (){
+        artefact = null;
+        timestamp = 0;
+        seller = null;
+        buyer = null;
+        auctionHouse = null;
+        price = 0;
+    }
+
+    //copy constructor
+    public Transaction (Transaction t){
+        this.artefact = t.artefact;
+        this.timestamp = t.timestamp;
+        this.seller = t.seller;
+        this.buyer = t.buyer;
+        this.auctionHouse = t.auctionHouse;
+        this.price = t.price;
+    }
+
+
     //setter methods
     public void setArtefact (Artefact artefact){
         this.artefact = artefact;
@@ -52,7 +73,7 @@ public class Transaction {
     //to string
     @Override
     public String toString(){
-        String string = artefact.toString() + ", Time stamp: " + timestamp + ", Seller: " + seller + ", Buyer: " + buyer
+        String string = artefact.toString() + ", Time stamp: " + timestamp + ", Seller: " + seller.getName() + ", Buyer: " + buyer.getName()
                 + ", Auction house: " + auctionHouse.getAddress() + ", Price: $" + price;
         return string;
     }

@@ -103,12 +103,12 @@ public class Main {
             country.setId(splits[3]);
             country.setBalance(0);
             a.setCountry(country);
-            a.setOwner(dataTemp.getSeller());
 
             dataTemp.setArtefact(a);
             dataTemp.setPrice(0); //initialize
             dataTemp.setTimestamp(0); //initialize
             dataTemp.setSeller(seller);
+            a.setOwner(dataTemp.getSeller());
             dataTemp.setBuyer(buyer);
             dataTemp.setAuctionHouse(auctionHouse);
             data.add(dataTemp);
@@ -139,8 +139,8 @@ public class Main {
         //assigning a writer for the file
         PrintWriter fileWriter = new PrintWriter(transactionsFile);
 
-
-        System.out.println("Would you like to add a transaction? (0 for yes, 1 for no)");
+        System.out.println("data size: " + data.size());
+        System.out.print("Would you like to add a transaction? (0 for yes, 1 for no) ");
         int answer = scnr.nextInt();
         int i = 0;
         while (answer == 0){
@@ -151,6 +151,7 @@ public class Main {
             data.get(i).setTimestamp(Calendar.getInstance().get(Calendar.YEAR));
 
             Block newBlock = null;
+            System.out.println("bC size: " + blockchain.size());
             if (blockchain.size() == 0){
                 newBlock = new Block(data.get(i), "0", data.get(i).getTimestamp());
             }
@@ -166,23 +167,40 @@ public class Main {
             newBlock.mineBlock(prefix, blockchain);
             //check if valid block
             if (newBlock.verify_Blockchain(blockchain, 0000)){
+                //add to blockchain
                 blockchain.add(newBlock);
+                //print to transactions file
                 fileWriter.println(data.get(i).toString());
-
+/*
+                //update the owner of the artefact
+                newBlock.getData().getArtefact().setOwner(newBlock.getData().getBuyer());
+                //prep a new buyer for next transaction of the artefact
+                newBlock.getData().setBuyer(newBlock.getData().getSeller());
+                //prep the owner as the seller for next transaction of the artefact
+                newBlock.getData().setSeller(newBlock.getData().getArtefact().getOwner());
+*/
                 System.out.println("Transaction completed");
             }
-            else
+            else {
                 System.out.println("Malicious block, not added to the chain");
+            }
 
             //iterate through data, cycles back to start if at end
             if (i < data.size() - 1) {
                 i++;
+                System.out.println("data size: " + data.size() + " i: " + i);
             }
             else {
-                i = 0;
+                int size = data.size();
+                for (int j = 0; j < size; j++){
+                    Transaction dataTemp = new Transaction(data.get(j));
+                    data.add(dataTemp);
+                    System.out.println("data size: " + data.size() + " i: " + i + " j: " + j);
+                }
+                i++;
             }
 
-            System.out.println("Would you like to add a transaction? (0 for yes, 1 for no)");
+            System.out.print("Would you like to add a transaction? (0 for yes, 1 for no) ");
             answer = scnr.nextInt();
         }
 

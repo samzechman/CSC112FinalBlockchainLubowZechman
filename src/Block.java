@@ -105,7 +105,7 @@ public class Block {
         String prefixString = new String(new char[prefix]).replace('\0', '0');
         //If the transaction meets the stakeholders agreement in TreatySC, mine the block;
         //otherwise abort the transaction and display a proper message.
-        if (BC.size() > 2 && !TreatySC(data)){
+        if (!TreatySC(data)){
             System.out.println("This transaction does not meet the stakeholders' agreement -- block not valid.");
         }
         else {
@@ -115,8 +115,8 @@ public class Block {
                 nonce++;
                 currHash = calculateBlockHash();
             }
-            System.out.println("block mined");
-            System.out.println(currHash);
+            //System.out.println("block mined"); //testing
+            //System.out.println(currHash); //testing
         }
         return currHash;
     }
@@ -205,21 +205,21 @@ public class Block {
             //checking if the current hash is equal to the calculated hash or not
             if (!currentBlock.currHash.equals(currentBlock.calculateBlockHash())) {
                 //hashes not equal
-                System.out.println("first");
+                System.out.println("first"); //testing
                 return false;
             }
             //checking if the previous hash is equal to the calculated previous hash or not
             if (!previousBlock.currHash.equals(currentBlock.prevHash)) {
                 //prev hashes not equal
-                System.out.println(previousBlock.currHash);
-                System.out.println(currentBlock.prevHash);
-                System.out.println("second");
+                System.out.println(previousBlock.currHash); //testing
+                System.out.println(currentBlock.prevHash); //testing
+                System.out.println("second"); //testing
                 return false;
             }
             //checking if the current block has been mined
             if ( currentBlock.getCurrHash().substring(0, prefix).equals(0000) ) {
                 //block has not been mined
-                System.out.println("third");
+                System.out.println("third"); //testing
                 return false;
             }
         }
