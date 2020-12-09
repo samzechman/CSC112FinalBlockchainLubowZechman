@@ -42,7 +42,6 @@ public class Main {
         }
         //if file does exist, continue program using file
         Scanner fileReader2 = new Scanner(artefactsFile);
-
         //read in the first line of variables, pass over to get to the actual data
         header = fileReader2.nextLine();
 
