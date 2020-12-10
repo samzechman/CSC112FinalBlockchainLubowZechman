@@ -17,7 +17,7 @@ public class MainTest {
         ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
         ArrayList<Stakeholder> stakeholderList = new ArrayList<Stakeholder>();
 
-
+        System.out.println("Opening databases...");
         //creating stakeholders data file
         FileInputStream stakeholdersFile = null;
         //ensure the file actually exists
@@ -90,7 +90,7 @@ public class MainTest {
             answer = scnr.nextInt();
         }
         System.out.println("Stakeholder database initialized.");
-
+        System.out.println("");
 
         //creating artefacts data file
         FileInputStream artefactsFile = null;
@@ -168,6 +168,7 @@ public class MainTest {
             answer = scnr.nextInt();
         }
         System.out.println("Artefact database initialized.");
+        System.out.println("");
 
         //creating transactions file
         FileOutputStream transactionsFile = null;
@@ -284,14 +285,18 @@ public class MainTest {
                 newBlock.getData().setSeller(newBlock.getData().getArtefact().getOwner());
 
                 System.out.println("Transaction completed");
+                System.out.println("");
                 i++;
             }
             else {
                 System.out.println("Malicious block, not added to the chain");
+                System.out.println("");
             }
             System.out.print("Would you like to add a transaction? (0 for yes, 1 for no) ");
             answer = scnr.nextInt();
         }
+
+        System.out.println("Thank you for your business! See transactionsFile for the transaction history.");
         //close transactions filewriter
         fileWriter.close();
 
