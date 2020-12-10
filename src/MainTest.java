@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -6,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.util.InputMismatchException;
+
 public class MainTest {
+
     public static void main (String[] args) {
         ArrayList<Block> blockchain = new ArrayList<Block>();
         int prefix = 4;   //we want our hash to start with four zeroes
@@ -52,7 +54,20 @@ public class MainTest {
         }
         fileReader.close();
         System.out.print("Stakeholder database complete. Would you like to add another stakeholder? (0 for yes, 1 for no) ");
-        int answer = scnr.nextInt();
+        int answer = 2;
+        //ensure a 0 or 1 answer
+        try {
+            answer = scnr.nextInt();
+            while (answer != 0 && answer != 1){
+                System.out.println("Please enter either 0 for yes or 1 for no.");
+                answer = scnr.nextInt();
+            }
+        }
+        //if input not a number, continue on
+        catch (InputMismatchException e) {
+            System.out.println("Invalid character. No new stakeholders added.");
+        }
+
         while(answer == 0){
             //create new stakeholder object
             Stakeholder s = new Stakeholder();
@@ -71,6 +86,7 @@ public class MainTest {
             stakeholderList.add(s);
             //check again
             System.out.print("Stakeholder added. Would you like to add another stakeholder? (0 for yes, 1 for no)");
+
             answer = scnr.nextInt();
         }
         System.out.println("Stakeholder database initialized.");
@@ -115,7 +131,18 @@ public class MainTest {
         }
         fileReader2.close();
         System.out.print("Artefact database complete. Would you like to add another artefact? (0 for yes, 1 for no) ");
-        answer = scnr.nextInt();
+        //ensure a 0 or 1 answer
+        try {
+            answer = scnr.nextInt();
+            while (answer != 0 && answer != 1){
+                System.out.println("Please enter either 0 for yes or 1 for no.");
+                answer = scnr.nextInt();
+            }
+        }
+        //if input not a number, continue on
+        catch (InputMismatchException e) {
+            System.out.println("Invalid character. No new artefacts added.");
+        }
         while(answer == 0){
             //create new artefact object
             Artefact a = new Artefact(); //filereader2
@@ -159,7 +186,20 @@ public class MainTest {
 
 
         System.out.print("Would you like to make a transaction? (0 for yes, 1 for no) ");
-        answer = scnr.nextInt();
+        //ensure a 0 or 1 answer
+        try {
+            answer = scnr.nextInt();
+            while (answer != 0 && answer != 1){
+                System.out.println("Please enter either 0 for yes or 1 for no.");
+                answer = scnr.nextInt();
+            }
+        }
+        //if input not a number, assume no transactions wanted
+        catch (InputMismatchException e) {
+            System.out.println("Invalid character. No new transactions will occur.");
+            answer = 1;
+        }
+
         int i = 0; //iterations
         while (answer == 0){
             Transaction dataTemp = new Transaction();
@@ -183,17 +223,22 @@ public class MainTest {
             dataTemp.setArtefact(artefactList.get(num));
 
             //set seller/owner
-            System.out.println("Who is the seller? (enter corresponding number)");
-            for (int j = 0; j < stakeholderList.size(); j++){
-                System.out.print(j + ") ");
-                System.out.println(stakeholderList.get(j).getName());
+            if(dataTemp.getArtefact().getOwner() == null) {
+                System.out.println("Who is the seller? (enter corresponding number)");
+                for (int j = 0; j < stakeholderList.size(); j++) {
+                    System.out.print(j + ") ");
+                    System.out.println(stakeholderList.get(j).getName());
+                }
+                num = scnr.nextInt();
+                dataTemp.getArtefact().setOwner(stakeholderList.get(num));
+                dataTemp.setSeller(stakeholderList.get(num));
             }
-            num = scnr.nextInt();
-            dataTemp.getArtefact().setOwner(stakeholderList.get(num));
-            dataTemp.setSeller(stakeholderList.get(num));
+            else {
+                dataTemp.setSeller(dataTemp.getArtefact().getOwner());
+            }
 
             //set auctionhouse
-            System.out.println("From which auctionhouse?"); //annoying
+            System.out.println("From which auctionhouse?");
             for (int j = 0; j < stakeholderList.size(); j++){
                 System.out.print(j + ") ");
                 System.out.println(stakeholderList.get(j).getAddress());
@@ -213,9 +258,9 @@ public class MainTest {
             System.out.println("Artefact in transaction: " + dataTemp.getArtefact().getName() + " from " + dataTemp.getSeller().getName() + " to " + dataTemp.getBuyer().getName() + " for $" + dataTemp.getPrice());
 
             Block newBlock = null;
-            //if first block
+            //first block
             if (blockchain.size() == 0){
-                newBlock = new Block(dataTemp, "0", dataTemp.getTimestamp());
+                newBlock = new Block( dataTemp, "0", dataTemp.getTimestamp() );
             }
             //following blocks
             else {
@@ -223,34 +268,33 @@ public class MainTest {
             }
             //mine the block
             newBlock.mineBlock(prefix, blockchain);
+
             //check if valid block
-            if (newBlock.verify_Blockchain(blockchain, 0000)){
+            if ( newBlock.verify_Blockchain(blockchain, 0000, i, newBlock) && newBlock.TreatySC(dataTemp)){
                 //add to blockchain
                 blockchain.add(newBlock);
                 //print to transactions file
                 fileWriter.println(dataTemp.toString());
-/*
-will need to add stuff to keep track of who originally has it or who it goes to
-                //update the owner of the artefact
-                newBlock.getData().getArtefact().setOwner(newBlock.getData().getBuyer());
-                //prep a new buyer for next transaction of the artefact
-                newBlock.getData().setBuyer(newBlock.getData().getSeller());
-                //prep the owner as the seller for next transaction of the artefact
-                newBlock.getData().setSeller(newBlock.getData().getArtefact().getOwner());
-*/
+
+                //add transaction to the arrayList
                 transactionList.add(dataTemp);
+
+                //update the owner and seller of the artefact
+                newBlock.getData().getArtefact().setOwner(newBlock.getData().getBuyer());
+                newBlock.getData().setSeller(newBlock.getData().getArtefact().getOwner());
+
                 System.out.println("Transaction completed");
+                i++;
             }
             else {
                 System.out.println("Malicious block, not added to the chain");
             }
-
             System.out.print("Would you like to add a transaction? (0 for yes, 1 for no) ");
             answer = scnr.nextInt();
-            i++;
         }
         //close transactions filewriter
         fileWriter.close();
 
     }
+
 }

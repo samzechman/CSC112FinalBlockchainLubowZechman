@@ -1,5 +1,3 @@
-import java.nio.file.StandardWatchEventKinds;
-
 public class Artefact {
 
     //variable declarations
